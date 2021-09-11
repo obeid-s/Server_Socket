@@ -1,0 +1,16 @@
+{
+  "name": "obeid_s/socket",
+  "authors": [
+      {
+          "name": "obeid",
+          "email": "obeidsalem@gmail.com"
+      }
+  ],
+  "require": {},
+  "autoload": {
+      "psr-4": {
+          "oSocket\\": "includes/",
+          "oSocket\\oAbstract\\": "includes/abstract"
+      }
+  }
+}
