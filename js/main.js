@@ -17,6 +17,11 @@ var ws = new WebSocket("ws://192.168.8.107:8020");
 
 ws.onopen = function() {
   show_msg("Socket is open", "green");
+  // window.onbeforeunload = function() {
+  //   ws.send("exit");
+  //   // ws.close();
+  //   return null;
+  // };
 }
 
 ws.onmessage = function(e) {
