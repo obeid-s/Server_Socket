@@ -33,9 +33,6 @@ abstract class SocketAbstract {
       $data  = substr($message, 8);
     }
     else {
-      echo "=================================\n";
-      echo "=============ON ELSE: ". $length ." ================\n";
-      echo "=================================\n";
       $masks = substr($message, 2, 4);
       $data  = substr($message, 6);
     }
@@ -65,10 +62,10 @@ abstract class SocketAbstract {
 
   public function my_test($message) {
     // $first = ord($message[0]) & 0x7F;
-    $first = ord($message[0]);
-    echo "--------------- My Test --------------\n";
-    echo "first: [" . $first . "]\n";
-    echo "---------------------------------------\n"; 
+    $length = ord($message[1]) & 0x7F;
+    echo "----- ord ----\n" . ord($message[1]) . " [". $message[1] ."]" . "The Length: " . $length . "\n\n\n";
+    
+
   }
 
 }

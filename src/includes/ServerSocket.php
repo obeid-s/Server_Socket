@@ -126,10 +126,7 @@ class ServerSocket extends SocketAbstract {
         elseif ($receive_message > 0) {
           echo "-------- Received message: ----------\n";
           echo "Receive Bytes: " . $receive_message . "\n";
-
-          echo "Before: (" . $message . ") Length: " . strlen($message) . "\n"; 
           $decode = $this->decode_message($message);
-          echo "After : (" . $decode . ") Length: " . strlen($decode) . "\n"; 
 
           $this->my_test($message);
 
