@@ -20,7 +20,7 @@ abstract class SocketAbstract {
     $decoded = null;
     // 127
     // $message[1] => second byte
-    $length = ord($message[1]) & 0x7F;
+    $length = ord($message[1]) & 127;
 
     // 0x7F
     if ($length == 127) {

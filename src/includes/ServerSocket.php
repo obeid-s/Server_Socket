@@ -100,70 +100,49 @@ class ServerSocket extends SocketAbstract {
     array_splice($this->clients, $index, 1);
   }
 
-  private function decodeClosedFromClient($message) {
-
-  }
-
   private function start() {
     $this->non_blocking();
-    $isStopReading = false;
     while (true) {
-      
+      usleep(300);
       for ($i = 0; $i < count($this->clients); $i++) {
-        // receive the message if exist
         $receive_message = socket_recv($this->clients[$i]->getSocket(), $message, 1024, 0);
         if ($receive_message === 0) {
           $this->closeAndRemove($i);
-          $isStopReading = true;
           break;
         }
         elseif ($receive_message > 0) {
-          echo "-------- Received message: ----------\n";
-          $decode = $this->decode_message($message);
-          if (strlen($decode) <= 0 || empty($decode)) {
+          // FIN -> [1000] 1 bit && opcode -> 4 bit ==> 10001000 -> client disconnected
+          $opcode = ord($message[0]);
+          if ($opcode == 136) {
             echo "----- closing user connection ----\n";
             $this->closeAndRemove($i);
-            $isStopReading = true;
+            $this->sendNotifClientDisconnected();
+            $this->startAcceptClients();
             break;
-          } else {
-            $this->sendToAllClients($decode);
           }
+          
+          $decode = $this->decode_message($message);
+          $this->sendToAllClients($this->clients[$i], $decode);
+
         }
-      }
-      if ($isStopReading) {
-        echo "---- Re-watting for client to join ----\n";
-        break;
       }
     }
 
-    $this->startAcceptClients();
   }
 
-  private function sendToAllClients($message) {
-    sleep(2);
-    echo "Before Sending :: count clients: " . count($this->clients) . "\n";
-    sleep(2);
-    
+  private function sendToAllClients(Client $sender, $message) {
+    for ($i = 0; $i < count($this->clients); $i++) {
+      if ($sender !== $this->clients[$i]) {
+        $encode = $this->encode_message($message);
+        socket_send($this->clients[$i]->getSocket(), $encode, strlen($encode), 0);
+      }
+    }
+  }
+
+  private function sendNotifClientDisconnected($message = "Client Disconnected, waitting for him to re-join..") {
     for ($i = 0; $i < count($this->clients); $i++) {
       $encode = $this->encode_message($message);
       socket_send($this->clients[$i]->getSocket(), $encode, strlen($encode), 0);
     }
   }
-
-  private function getErrorMessage(Client $client) {
-    return socket_strerror(socket_last_error($client->getSocket()));
-  }
-
-  private function handleError(Client $client) : bool {
-    $error_message = $this->getErrorMessage($client);
-    if ($error_message == "Connection reset by peer") {
-      array_splice($this->clients, $client->getIndex(), 1);
-      $this->startAcceptClients();
-      return false;
-    }
-    return true;
-  }
-
-
-
 }
