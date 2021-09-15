@@ -96,14 +96,8 @@ class ServerSocket extends SocketAbstract {
     if (!isset($this->clients[$index])) {
       return;
     }
-    echo "--- close connection for client index : [" . $index . "] ---\n";
     socket_close($this->clients[$index]->getSocket());
-
-    echo "---- splice clients arr: -----\n";
-    echo "Before: " . count($this->clients) . "\n";
     array_splice($this->clients, $index, 1);
-    echo "After: " . count($this->clients) . "\n";
-    
   }
 
   private function decodeClosedFromClient($message) {
@@ -125,18 +119,15 @@ class ServerSocket extends SocketAbstract {
         }
         elseif ($receive_message > 0) {
           echo "-------- Received message: ----------\n";
-          echo "Receive Bytes: " . $receive_message . "\n";
           $decode = $this->decode_message($message);
-
-          $this->my_test($message);
-
-          if ($decode == "?") {
-            echo "--- decode = " . "exit, [" . $decode . "]\n ---";
+          if (strlen($decode) <= 0 || empty($decode)) {
+            echo "----- closing user connection ----\n";
             $this->closeAndRemove($i);
             $isStopReading = true;
             break;
+          } else {
+            $this->sendToAllClients($decode);
           }
-          $this->sendToAllClients($decode);
         }
       }
       if ($isStopReading) {

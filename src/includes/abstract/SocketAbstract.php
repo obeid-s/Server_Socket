@@ -5,7 +5,7 @@ use oSocket\Client;
 
 abstract class SocketAbstract {
   // const ADDRESS = "127.0.0.1";
-  const ADDRESS = "192.168.8.107";
+  const ADDRESS = "localhost";
   const PORT    = 8020;
   const MAGIC_STR = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11";
   public $socket;
@@ -61,10 +61,37 @@ abstract class SocketAbstract {
   }
 
   public function my_test($message) {
-    // $first = ord($message[0]) & 0x7F;
-    $length = ord($message[1]) & 0x7F;
-    echo "----- ord ----\n" . ord($message[1]) . " [". $message[1] ."]" . "The Length: " . $length . "\n\n\n";
-    
+    $len = ord($message[1]) & 0x7F;
+
+    if ($len == 126) {
+      // read 16 bits
+      $mask = substr($message, 4, 4);
+      $data = substr($message, 8);
+
+      // 0000 0000
+      // &
+      // 
+      // 01111 1111
+
+    }
+    elseif ($len == 127) {
+      // read 64 bits
+      $mask = substr($message, 10, 4);
+      $data = substr($message, 14);
+    }
+    else {
+      // read 9-15 bits
+      $mask = substr($message, 2, 4);
+      $data = substr($message, 6);
+    }
+
+    $result = "";
+    for ($i = 0; $i < strlen($data); $i++) {
+      $result .= $data[$i] ^ $mask[$i % 4];
+    }
+
+    echo "------ Result: " . $result . " [len:". $len ."] ------------\n";
+    return $result;
 
   }
 

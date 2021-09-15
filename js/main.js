@@ -13,7 +13,7 @@ if (!('WebSocket' in window)) {
   show_msg("websocket not supported!", "red");
 }
 
-var ws = new WebSocket("ws://192.168.8.107:8020");
+var ws = new WebSocket("ws://localhost:8020");
 
 ws.onopen = function() {
   show_msg("Socket is open", "green");
