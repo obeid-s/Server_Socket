@@ -4,9 +4,7 @@ use oSocket\ServerSocket;
 include "src/vendor/autoload.php";
 
 // ============================ //
-// Use the PHP terminal to run the server. //
+// Use the terminal to run the file. //
 // ============================ //
-$socket = new ServerSocket();
-
-echo "-----== Server Running ==------\n";
+$socket = new ServerSocket("localhost", 8010);
 $socket->run();

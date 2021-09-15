@@ -13,15 +13,10 @@ if (!('WebSocket' in window)) {
   show_msg("websocket not supported!", "red");
 }
 
-var ws = new WebSocket("ws://localhost:8020");
+var ws = new WebSocket("ws://localhost:8010");
 
 ws.onopen = function() {
   show_msg("Socket is open", "green");
-  // window.onbeforeunload = function() {
-  //   ws.send("exit");
-  //   // ws.close();
-  //   return null;
-  // };
 }
 
 ws.onmessage = function(e) {

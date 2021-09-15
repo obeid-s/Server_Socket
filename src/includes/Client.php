@@ -3,18 +3,18 @@
 namespace oSocket;
 
 class Client {
-  private $index;
+  private $id;
   private $username;
   private $socket;
 
-  public function __construct($index, $username, $socket) {
-    $this->index = $index;
+  public function __construct($id, $username, $socket) {
+    $this->index = $id;
     $this->username = $username;
     $this->socket = $socket;
   }
 
-  public function getIndex() {
-    return $this->index;
+  public function getId() {
+    return $this->id;
   }
 
   public function getUsername() {

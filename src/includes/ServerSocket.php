@@ -3,29 +3,36 @@
 namespace oSocket;
 
 use oSocket\oAbstract\SocketAbstract;
-use Socket;
+
 
 class ServerSocket extends SocketAbstract {
-
-  private $index = 0;
+  private $ADDRESS = "localhost";
+  private $PORT    = 8020;
+  private $id = 1;
   private $clients = [];
   const MAX_CLIENTS = 2;
 
+  public function __construct(string $address = "localhost", int $port = 8010) {
+    $this->ADDRESS = $address;
+    $this->PORT    = $port;
+  }
+
   public function run() {
-    
     $this->createSocket();
 
     if ($this->socket === false || is_null($this->socket)) {
       throw new SocketExceptions("socket is null or false");
     }
 
-    if (socket_bind($this->socket, self::ADDRESS, self::PORT) === false) {
+    if (socket_bind($this->socket, $this->ADDRESS, $this->PORT) === false) {
       throw new SocketExceptions("could not bind socket");
     }
 
     if (socket_listen($this->socket) === false) {
       throw new SocketExceptions("could not listen");
     }
+
+    echo "------ Server running {$this->ADDRESS}:{$this->PORT} ------\n";
 
     $this->startAcceptClients();
 
@@ -42,8 +49,8 @@ class ServerSocket extends SocketAbstract {
         // client request header
         $request = socket_read($accepted_client, 1024);
         if ($this->handshake($request, $accepted_client) === true) {
-          $this->clients[] = new Client($this->index, "client", $accepted_client);
-          $this->index++;
+          $this->clients[] = new Client($this->id, "client", $accepted_client);
+          $this->id++;
         } else {
           continue;
         }
