@@ -11,7 +11,8 @@ don't forget to edit main.js file with <code>ws://YOUR_DOMAIN:PORT/</code>
 $socket = new ServerSocket(SAME_DOMAIN_IN_JS, SAME_PORT);
 </code>
 <br />
-## run
+
+## Run main.php
 open your terminal and go to the folder and type <code>php .\main.php</code>,
 <br />you should see in the terminal:<br />
 <pre>
