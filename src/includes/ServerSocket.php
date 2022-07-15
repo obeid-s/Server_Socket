@@ -119,8 +119,8 @@ class ServerSocket extends SocketAbstract {
         }
         elseif ($receive_message > 0) {
           // FIN -> [1000] 1 bit && opcode -> 4 bit ==> 10001000 -> client disconnected
-          $opcode = ord($message[0]);
-          if ($opcode == 136) {
+
+          if ((ord($message[0]) & 0x0F) == 0x08) {
             echo "----- closing user connection ----\n";
             $this->closeAndRemove($i);
             $this->sendNotifClientDisconnected();
